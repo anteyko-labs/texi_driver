@@ -8,7 +8,7 @@ export const Logo: React.FC<LogoProps> = ({ className = 'h-12' }) => {
     <div className="relative flex items-center">
       <div className={`${className} flex items-center`}>
         <img 
-          src="public\IMG_0996 (1)-Photoroom.png"
+          src="IMG_0996_Photoroom.png"
           alt="Logo" 
           className="h-20 w-auto object-contain max-w-none"
         />
