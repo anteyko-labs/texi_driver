@@ -16,7 +16,7 @@ const RoutesPage: React.FC = () => {
       to: 'Almaty',
       image: 'https://images.pexels.com/photos/30267231/pexels-photo-30267231/free-photo-of-modern-astana-skyline-in-winter-light.jpeg?auto=compress&cs=tinysrgb&w=600',
       time: '3.5h',
-      price: '7000 ⃀',
+      price: '7000 som',
       distance: '235 km',
       description: 'A popular route connecting the capitals of Kyrgyzstan and Kazakhstan. The journey takes you through beautiful mountain landscapes and valleys.'
     },
@@ -27,7 +27,7 @@ const RoutesPage: React.FC = () => {
       to: 'Bishkek',
       image: 'https://images.pexels.com/photos/15060464/pexels-photo-15060464/free-photo-of-a-white-tower-with-a-clock-on-top.jpeg?auto=compress&cs=tinysrgb&w=600',
       time: '3.5h',
-      price: '7000 ⃀',
+      price: '7000 с',
       distance: '235 km',
       description: 'The return journey from Almaty to Bishkek. Our drivers know the best stops along the way for refreshments and scenic views.'
     },
@@ -38,7 +38,7 @@ const RoutesPage: React.FC = () => {
       to: 'Issyk-Kul',
       image: 'https://images.pexels.com/photos/13189976/pexels-photo-13189976.jpeg?auto=compress&cs=tinysrgb&w=600',
       time: '3h',
-      price: '3500 ⃀',
+      price: '3500 с',
       distance: '250 km',
       description: 'Travel from Bishkek to the beautiful Issyk-Kul lake, one of the largest alpine lakes in the world. Enjoy breathtaking mountain and lake views.'
     },
@@ -49,7 +49,7 @@ const RoutesPage: React.FC = () => {
       to: 'Issyk-Kul',
       image: 'https://images.pexels.com/photos/18158474/pexels-photo-18158474/free-photo-of-a-mountain-landscape-with-a-rocky-river-in-kyrgyzstan.jpeg?auto=compress&cs=tinysrgb&w=600',
       time: '5h',
-      price: '12000 ⃀',
+      price: '12000 с',
       distance: '400 km',
       description: 'Direct service from Almaty to Issyk-Kul lake. Perfect for weekend getaways or vacation trips to this beautiful natural wonder.'
     },
@@ -60,7 +60,7 @@ const RoutesPage: React.FC = () => {
       to: 'Osh',
       image: 'https://images.pexels.com/photos/12702443/pexels-photo-12702443.jpeg?auto=compress&cs=tinysrgb&w=600',
       time: '9h',
-      price: '12000 ⃀',
+      price: '12000 с',
       distance: '700 km',
       description: 'Long-distance service from Bishkek to Osh. Experience the diverse landscapes of Kyrgyzstan from north to south.'
     },
@@ -71,7 +71,7 @@ const RoutesPage: React.FC = () => {
       to: 'Talas',
       image: 'https://images.pexels.com/photos/7965239/pexels-photo-7965239.jpeg?auto=compress&cs=tinysrgb&w=600',
       time: '4h',
-      price: '8000 ⃀',
+      price: '8000 с',
       distance: '300 km',
       description: 'Travel from Bishkek to the historic Talas region. Discover the cultural heritage and beautiful landscapes of northwestern Kyrgyzstan.'
     },

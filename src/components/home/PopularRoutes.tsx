@@ -14,28 +14,28 @@ const PopularRoutes: React.FC = () => {
       name: t('routes.bishkek_almaty'),
       image: 'https://images.pexels.com/photos/30267231/pexels-photo-30267231/free-photo-of-modern-astana-skyline-in-winter-light.jpeg?auto=compress&cs=tinysrgb&w=600',
       time: '3.5h',
-      price: '7000 ⃀',
+      price: '7000 с',
     },
     {
       id: 'almaty-bishkek',
       name: t('routes.almaty_bishkek'),
       image: 'https://images.pexels.com/photos/15060464/pexels-photo-15060464/free-photo-of-a-white-tower-with-a-clock-on-top.jpeg?auto=compress&cs=tinysrgb&w=600',
       time: '3.5h',
-      price: '7000 ⃀',
+      price: '7000 с',
     },
     {
       id: 'bishkek-issykkul',
       name: t('routes.bishkek_issykkul'),
       image: 'https://images.pexels.com/photos/1482927/pexels-photo-1482927.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
       time: '3h',
-      price: '3500 ⃀',
+      price: '3500 с',
     },
     {
       id: 'almaty-issykkul',
       name: t('routes.almaty_issykkul'),
       image: 'https://images.pexels.com/photos/18158474/pexels-photo-18158474/free-photo-of-a-mountain-landscape-with-a-rocky-river-in-kyrgyzstan.jpeg?auto=compress&cs=tinysrgb&w=600',
       time: '5h',
-      price: '12000 ⃀',
+      price: '12000 с',
     },
   ];
   
