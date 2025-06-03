@@ -90,7 +90,7 @@ const submitBookingViaEmail = async (data: BookingData): Promise<{ success: bool
 const submitBookingToTelegram = async (data: BookingData): Promise<{ success: boolean; message: string }> => {
   try {
     const botToken = '8031894532:AAE2R4CjHn6z4q-9sRFtzIyHjCQRy8Abb0k'; // Токен вашего бота
-    const chatId = '1055419136';     // ID чата или канала
+    const chatId = '7589800554';     // ID чата или канала
     
     const message = `
 🚗 *Новая заявка на бронирование*
