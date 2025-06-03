@@ -32,11 +32,24 @@ const VehicleShowcase = memo(({ category, models, imageSrc }) => {
   );
 });
 
-// Оптимизированный 3D компонент с ленивой загрузкой
+// Оптимизированный 3D компонент с поддержкой touch-управления
 const Vehicle3DShowcase = memo(({ category, models, embedUrl, title }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [shouldLoad, setShouldLoad] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Определение мобильного устройства
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768 || 'ontouchstart' in window);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Intersection Observer для ленивой загрузки
   useEffect(() => {
@@ -62,8 +75,20 @@ const Vehicle3DShowcase = memo(({ category, models, embedUrl, title }) => {
     setIsLoaded(true);
   }, []);
 
-  // Оптимизированный URL без автозапуска
-  const optimizedEmbedUrl = embedUrl.replace('autostart=1', 'autostart=0');
+  // Оптимизированный URL с поддержкой touch и камеры
+  const optimizedEmbedUrl = embedUrl.replace('autostart=0', 'autostart=0')
+    .replace('ui_controls=0', 'ui_controls=1') // Включаем контролы для мобильных
+    .replace('camera=0', 'camera=1') // Включаем управление камерой
+    + '&dnt=1' // Do not track
+    + '&transparent=0'
+    + '&ui_theme=dark'
+    + '&ui_hint=2' // Показываем подсказки на мобильных
+    + '&orbit_constraint_pan=0' // Разрешаем панорамирование
+    + '&orbit_constraint_zoom_in=0.1' // Минимальный зум
+    + '&orbit_constraint_zoom_out=10' // Максимальный зум
+    + '&double_click=0' // Отключаем двойной клик для фуллскрина
+    + '&scrollwheel=1' // Включаем зум колесиком мыши
+    + '&internal=1'; // Внутренний режим
 
   return (
     <div 
@@ -92,7 +117,7 @@ const Vehicle3DShowcase = memo(({ category, models, embedUrl, title }) => {
           </div>
         )}
         
-        {/* 3D Model iframe - загружается только при необходимости */}
+        {/* 3D Model iframe - с поддержкой touch */}
         {shouldLoad && (
           <div className="absolute inset-0 overflow-hidden rounded-lg">
             <iframe 
@@ -100,14 +125,15 @@ const Vehicle3DShowcase = memo(({ category, models, embedUrl, title }) => {
               className={`absolute -top-8 -left-8 w-[calc(100%+4rem)] h-[calc(100%+4rem)] transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
               frameBorder="0" 
               allowFullScreen={false}
-              allow="autoplay; fullscreen" 
+              allow="autoplay; fullscreen; gyroscope; accelerometer" 
               loading="lazy"
               src={optimizedEmbedUrl}
               onLoad={handleLoad}
               style={{
                 pointerEvents: 'auto',
                 border: 'none',
-                outline: 'none'
+                outline: 'none',
+                touchAction: 'manipulation' // Включаем touch-события
               }}
             />
           </div>
@@ -116,7 +142,17 @@ const Vehicle3DShowcase = memo(({ category, models, embedUrl, title }) => {
         {/* Интерактивная подсказка */}
         {isLoaded && (
           <div className="absolute top-4 left-4 bg-black/80 text-white px-3 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            🖱️ Кликните для взаимодействия
+            {isMobile ? '👆 Пинч для масштабирования' : '🖱️ Кликните для взаимодействия'}
+          </div>
+        )}
+
+        {/* Мобильная подсказка */}
+        {isLoaded && isMobile && (
+          <div className="absolute bottom-4 right-4 bg-black/80 text-white px-2 py-1 rounded text-xs">
+            <div className="flex items-center gap-1">
+              <span className="text-xs">👆</span>
+              <span className="text-xs">Двумя пальцами</span>
+            </div>
           </div>
         )}
       </div>
@@ -233,54 +269,82 @@ const VehiclesPage = () => {
     }
   ];
   
-  // Минимальные критические стили
+  // Минимальные критические стили с поддержкой touch
   useEffect(() => {
     const globalStyle = document.createElement('style');
     globalStyle.textContent = `
       iframe[src*="sketchfab.com"] {
         border: none !important;
         outline: none !important;
+        touch-action: manipulation !important;
       }
       
-      /* Скрытие UI элементов Sketchfab */
+      /* Поддержка touch-событий */
+      .touch-enabled {
+        touch-action: pan-x pan-y pinch-zoom !important;
+      }
+      
+      /* Скрытие UI элементов Sketchfab, но оставляем контролы для мобильных */
       [class*="watermark"],
       [class*="attribution"],
       [class*="logo"],
       [class*="branding"],
       .viewer-watermark,
-      .viewer-attribution,
-      .viewer-ui {
+      .viewer-attribution {
         display: none !important;
         visibility: hidden !important;
         opacity: 0 !important;
       }
       
-      /* Полное скрытие значка плей и всех элементов управления */
-      .play-button,
-      .play-icon,
-      [class*="play"],
-      button[aria-label*="play"],
-      [data-test="play-button"],
-      .viewer-play-button,
-      .play-overlay,
-      .c-viewer-play-button,
-      .viewer-ui-play-button,
-      [data-testid*="play"],
-      .sketchfab-play-button,
-      .viewer-controls .play,
-      button[title*="play"],
-      button[title*="Play"],
-      .play-icon-container,
-      .player-play-button {
-        opacity: 0 !important;
-        visibility: hidden !important;
-        display: none !important;
-        pointer-events: none !important;
-        width: 0 !important;
-        height: 0 !important;
-        position: absolute !important;
-        left: -9999px !important;
-        z-index: -1 !important;
+      /* Частичное скрытие контролов на десктопе, но оставляем на мобильных */
+      @media (min-width: 769px) {
+        .play-button,
+        .play-icon,
+        [class*="play"],
+        button[aria-label*="play"],
+        [data-test="play-button"],
+        .viewer-play-button,
+        .play-overlay,
+        .c-viewer-play-button,
+        .viewer-ui-play-button,
+        [data-testid*="play"],
+        .sketchfab-play-button,
+        .viewer-controls .play,
+        button[title*="play"],
+        button[title*="Play"],
+        .play-icon-container,
+        .player-play-button {
+          opacity: 0 !important;
+          visibility: hidden !important;
+          display: none !important;
+          pointer-events: none !important;
+        }
+      }
+      
+      /* На мобильных оставляем минимальные контролы */
+      @media (max-width: 768px) {
+        iframe[src*="sketchfab.com"] {
+          touch-action: pan-x pan-y pinch-zoom !important;
+        }
+      }
+      
+      /* Улучшение производительности touch-событий */
+      * {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+      
+      /* Разрешаем выделение текста только для контента */
+      .text-content,
+      .text-content * {
+        -webkit-user-select: text;
+        -moz-user-select: text;
+        -ms-user-select: text;
+        user-select: text;
       }
     `;
     document.head.appendChild(globalStyle);
@@ -313,15 +377,15 @@ const VehiclesPage = () => {
           
           {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 max-w-4xl mx-auto">
-            <div className="text-center">
+            <div className="text-center text-content">
               <div className="text-4xl font-bold text-blue-400 mb-2">30+</div>
               <div className="text-gray-300">{t('vehicles.models')}</div>
             </div>
-            <div className="text-center">
+            <div className="text-center text-content">
               <div className="text-4xl font-bold text-green-400 mb-2">100%</div>
               <div className="text-gray-300">{t('vehicles.ka')}</div>
             </div>
-            <div className="text-center"> 
+            <div className="text-center text-content"> 
               <div className="text-4xl font-bold text-purple-400 mb-2">24/7</div>
               <div className="text-gray-300">{t('vehicles.la')} </div>
             </div>
