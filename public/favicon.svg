@@ -1,0 +1,14 @@
+<svg viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#F5D37D" />
+      <stop offset="100%" stopColor="#A37C1E" />
+    </linearGradient>
+  </defs>
+  <path d="M400 50L720 200V600L400 750L80 600V200L400 50Z" fill="black" stroke="url(#goldGradient)" strokeWidth="10"/>
+  <path d="M400 180L350 220L250 350L400 400L550 350L450 220L400 180Z" fill="white"/>
+  <path d="M150 300C250 300 300 320 400 350C500 320 550 300 650 300L630 370C530 370 500 390 400 420C300 390 270 370 170 370L150 300Z" fill="white"/>
+  <path d="M400 320L600 300C600 300 570 500 400 500C230 500 200 300 200 300L400 320Z" fill="none" stroke="white" strokeWidth="10"/>
+  <path d="M400 150L200 250C200 250 300 220 400 220C500 220 600 250 600 250L400 150Z" fill="url(#goldGradient)"/>
+  <path d="M175 450C175 450 250 520 400 520C550 520 625 450 625 450L650 500C650 500 550 580 400 580C250 580 150 500 150 500L175 450Z" fill="url(#goldGradient)"/>
+</svg>

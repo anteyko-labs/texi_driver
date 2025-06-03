@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply font-sans bg-black text-white antialiased;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold;
+  }
+  
+  h1 {
+    @apply text-3xl md:text-4xl lg:text-5xl leading-tight;
+  }
+  
+  h2 {
+    @apply text-2xl md:text-3xl lg:text-4xl leading-tight;
+  }
+  
+  h3 {
+    @apply text-xl md:text-2xl lg:text-3xl leading-tight;
+  }
+}
+
+@layer components {
+  .gold-text {
+    @apply bg-gold-gradient bg-clip-text text-transparent;
+  }
+  
+  .btn {
+    @apply px-6 py-3 rounded-lg font-semibold transition-all duration-300;
+  }
+  
+  .btn-primary {
+    @apply bg-gold-gradient hover:brightness-110 text-black;
+  }
+  
+  .btn-outline {
+    @apply border border-gold-light text-gold-light hover:bg-gold-light/10;
+  }
+  
+  .glass-card {
+    @apply backdrop-blur-md bg-black-light/60 border border-gold-light/20 rounded-xl;
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-black-light;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gold-gradient rounded-full;
+}
+
+/* Disable annoying tap highlight on mobile */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Gold shimmer effect */
+.gold-shimmer {
+  background: linear-gradient(90deg, 
+    rgba(245, 211, 125, 0), 
+    rgba(245, 211, 125, 0.5), 
+    rgba(163, 124, 30, 0.5), 
+    rgba(245, 211, 125, 0)
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
+}
