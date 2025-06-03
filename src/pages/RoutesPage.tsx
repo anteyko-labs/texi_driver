@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { ArrowRight, Clock, DollarSign, MapPin } from 'lucide-react';
+import { ArrowRight, Clock, Coins, MapPin } from 'lucide-react';
 import SectionHeading from '../components/common/SectionHeading';
 
 const RoutesPage: React.FC = () => {
@@ -143,7 +143,7 @@ const RoutesPage: React.FC = () => {
                         {t('routes.duration', { time: route.time })}
                       </div>
                       <div className="flex items-center text-gray-300 text-sm">
-                        <DollarSign size={16} className="text-gold-light mr-2" />
+                        <Coins size={16} className="text-gold-light mr-2" />
                         {t('routes.price', { price: route.price })}
                       </div>
                       <div className="flex items-center text-gray-300 text-sm">
