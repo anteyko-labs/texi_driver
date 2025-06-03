@@ -16,7 +16,7 @@ const RoutesPage: React.FC = () => {
       to: 'Almaty',
       image: 'https://images.pexels.com/photos/30267231/pexels-photo-30267231/free-photo-of-modern-astana-skyline-in-winter-light.jpeg?auto=compress&cs=tinysrgb&w=600',
       time: '3.5h',
-      price: '7000 som',
+      price: '7000 c',
       distance: '235 km',
       description: 'A popular route connecting the capitals of Kyrgyzstan and Kazakhstan. The journey takes you through beautiful mountain landscapes and valleys.'
     },
