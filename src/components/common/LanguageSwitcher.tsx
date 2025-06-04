@@ -8,8 +8,8 @@ const LanguageSwitcher: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const languages = [
-    { code: 'en', label: 'English' },
     { code: 'ru', label: 'Русский' },
+    { code: 'en', label: 'English' },
     { code: 'kg', label: 'Кыргызча' },
   ];
 
@@ -23,7 +23,7 @@ const LanguageSwitcher: React.FC = () => {
   };
 
   return (
-    <div className="fixed top-5 right-5 z-50">
+    <div className="fixed top-3.5 right-16 md:right-5 z-50">
       <button
         onClick={toggleDropdown}
         className="p-2 bg-black-light rounded-full text-gold-light hover:bg-black-light/80 transition-colors focus:outline-none glass-card"
