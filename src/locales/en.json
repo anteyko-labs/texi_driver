@@ -91,7 +91,10 @@
     "details": "Details",
     "journey_details": "Journey Details",
     "vehicle_passengers": "Vehicle & Passengers",
-    "booking_success": "Booking submitted successfully! We will contact you shortly."
+    "booking_success": "Booking submitted successfully! We will contact you shortly.",
+    "anywhere_hint": "You can book a ride from any city to any city!",
+    "from_placeholder": "E.g., Bishkek or any other city",
+    "to_placeholder": "E.g., Almaty or any other city"
   },
   "contact": {
     "title": "Contact Us",

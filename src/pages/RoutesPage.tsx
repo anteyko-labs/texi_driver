@@ -111,6 +111,9 @@ const RoutesPage: React.FC = () => {
       {/* Routes showcase */}
       <div className="py-16 bg-black">
         <div className="container mx-auto px-4">
+          <div className="mb-8 text-gold-light text-center font-semibold animate-pulse text-lg">
+            {t('booking.anywhere_hint')}
+          </div>
           <motion.div 
             className="grid grid-cols-1 lg:grid-cols-2 gap-8"
             variants={containerVariants}

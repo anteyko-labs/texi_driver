@@ -15,7 +15,6 @@ interface BookingData {
   vehicleType: string;
   fullName: string;
   phone: string;
-  email: string;
   notes: string;
 }
 
@@ -89,15 +88,13 @@ const submitBookingViaEmail = async (data: BookingData): Promise<{ success: bool
 // Функция для отправки в Telegram
 const submitBookingToTelegram = async (data: BookingData): Promise<{ success: boolean; message: string }> => {
   try {
-    const botToken = '8031894532:AAE2R4CjHn6z4q-9sRFtzIyHjCQRy8Abb0k'; // Токен вашего бота
-    const chatId = '7589800554';     // ID чата или канала
-    
+    const botToken = '8031894532:AAE2R4CjHn6z4q-9sRFtzIyHjCQRy8Abb0k';
+    const chatId = '7589800554';
     const message = `
 🚗 *Новая заявка на бронирование*
 
 👤 *Клиент:* ${data.fullName}
 📞 *Телефон:* ${data.phone}
-📧 *Email:* ${data.email || 'Не указан'}
 
 🛣️ *Маршрут:* ${data.from} → ${data.to}
 📅 *Дата:* ${data.date}
@@ -110,7 +107,7 @@ const submitBookingToTelegram = async (data: BookingData): Promise<{ success: bo
 ⏱️ *Время заявки:* ${new Date().toLocaleString('ru-RU', {
       timeZone: 'Asia/Bishkek',
       day: '2-digit',
-      month: '2-digit', 
+      month: '2-digit',
       year: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
@@ -168,7 +165,6 @@ const BookingPage: React.FC = () => {
     vehicleType: 'sedan',
     fullName: '',
     phone: '',
-    email: '',
     notes: ''
   });
   
@@ -209,7 +205,6 @@ const BookingPage: React.FC = () => {
           vehicleType: 'sedan',
           fullName: '',
           phone: '',
-          email: '',
           notes: ''
         });
         setStep(1);
@@ -295,26 +290,25 @@ const BookingPage: React.FC = () => {
                   transition={{ duration: 0.3 }}
                 >
                   <h3 className="text-xl font-semibold mb-6 text-white">{t('booking.journey_details')}</h3>
-                  
+                  <div className="mb-4 text-gold-light text-center font-semibold animate-pulse">
+                    {t('booking.anywhere_hint')}
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div>
                       <label htmlFor="from" className="block text-sm font-medium text-gray-300 mb-1">
                         {t('booking.from')}
                       </label>
                       <div className="relative">
-                        <select
+                        <input
+                          type="text"
                           id="from"
                           name="from"
                           value={formData.from}
                           onChange={handleChange}
                           required
+                          placeholder={t('booking.from_placeholder')}
                           className="w-full bg-black-light border border-gray-700 rounded-lg py-2 px-3 text-white focus:outline-none focus:ring-1 focus:ring-gold-light focus:border-gold-light"
-                        >
-                          <option value="">{t('common.select_departure')}</option>
-                          {cities.map((city) => (
-                            <option key={`from-${city}`} value={city}>{city}</option>
-                          ))}
-                        </select>
+                        />
                       </div>
                     </div>
                     
@@ -323,19 +317,16 @@ const BookingPage: React.FC = () => {
                         {t('booking.to')}
                       </label>
                       <div className="relative">
-                        <select
+                        <input
+                          type="text"
                           id="to"
                           name="to"
                           value={formData.to}
                           onChange={handleChange}
                           required
+                          placeholder={t('booking.to_placeholder')}
                           className="w-full bg-black-light border border-gray-700 rounded-lg py-2 px-3 text-white focus:outline-none focus:ring-1 focus:ring-gold-light focus:border-gold-light"
-                        >
-                          <option value="">{t('common.select_destination')}</option>
-                          {cities.map((city) => (
-                            <option key={`to-${city}`} value={city}>{city}</option>
-                          ))}
-                        </select>
+                        />
                       </div>
                     </div>
                   </div>
@@ -499,20 +490,6 @@ const BookingPage: React.FC = () => {
                         value={formData.phone}
                         onChange={handleChange}
                         required
-                        className="w-full bg-black-light border border-gray-700 rounded-lg py-2 px-3 text-white focus:outline-none focus:ring-1 focus:ring-gold-light focus:border-gold-light"
-                      />
-                    </div>
-                    
-                    <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">
-                        {t('booking.email')}
-                      </label>
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
                         className="w-full bg-black-light border border-gray-700 rounded-lg py-2 px-3 text-white focus:outline-none focus:ring-1 focus:ring-gold-light focus:border-gold-light"
                       />
                     </div>
