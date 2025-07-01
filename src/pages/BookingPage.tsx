@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Calendar, Clock, Users, Car, ChevronRight, Loader2 } from 'lucide-react';
 import SectionHeading from '../components/common/SectionHeading';
+import ReactDatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { ru, enUS } from 'date-fns/locale';
+import InputMask from 'react-input-mask';
 
 // Интерфейс для данных бронирования
 interface BookingData {
@@ -54,7 +58,6 @@ const submitBookingViaEmail = async (data: BookingData): Promise<{ success: bool
     // Пример с EmailJS
     const emailData = {
       from_name: data.fullName,
-      from_email: data.email,
       phone: data.phone,
       from_city: data.from,
       to_city: data.to,
@@ -168,9 +171,30 @@ const BookingPage: React.FC = () => {
     notes: ''
   });
   
+  const vehicleMaxPassengers: Record<string, number> = {
+    sedan: 4,
+    minivan: 7,
+    sprinter: 18,
+    suv: 4,
+    premium: 4
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    if (name === 'vehicleType') {
+      const max = vehicleMaxPassengers[value] || 18;
+      setFormData(prev => ({
+        ...prev,
+        vehicleType: value,
+        passengers: String(Math.min(Number(prev.passengers), max))
+      }));
+    } else if (name === 'passengers') {
+      const max = vehicleMaxPassengers[formData.vehicleType] || 18;
+      const val = Math.max(1, Math.min(Number(value), max));
+      setFormData(prev => ({ ...prev, passengers: String(val) }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
   };
   
   const nextStep = () => {
@@ -221,13 +245,62 @@ const BookingPage: React.FC = () => {
   
   const cities = ['Bishkek', 'Almaty', 'Issyk-Kul', 'Osh', 'Talas'];
   const vehicleTypes = [
-    { value: 'sedan', label: 'Sedan' },
-    { value: 'minivan', label: 'Minivan' },
-    { value: 'suv', label: 'SUV' },
-    { value: 'premium', label: 'Premium' },
-    { value: 'sprinter', label: 'Sprinter' }
+    { value: 'sedan', label: t('vehicles.sedan_title') },
+    { value: 'minivan', label: t('vehicles.minivan_title') },
+    { value: 'suv', label: t('vehicles.suv_title') },
+    { value: 'premium', label: t('vehicles.premium_title') },
+    { value: 'sprinter', label: t('vehicles.sprinter_title') }
   ];
   
+  // Получить сегодняшнюю дату в формате YYYY-MM-DD
+  const getToday = () => {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  };
+
+  // Для datepicker: преобразование строки даты в объект Date и обратно
+  const parseDate = (str: string) => {
+    if (!str) return null;
+    const [yyyy, mm, dd] = str.split('-');
+    return new Date(Number(yyyy), Number(mm) - 1, Number(dd));
+  };
+  const formatDate = (date: Date | null) => {
+    if (!date) return '';
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  };
+  // Для timepicker: преобразование строки времени в объект Date и обратно
+  const parseTime = (str: string) => {
+    if (!str) return null;
+    const [hh, min] = str.split(':');
+    const d = new Date();
+    d.setHours(Number(hh));
+    d.setMinutes(Number(min));
+    d.setSeconds(0);
+    d.setMilliseconds(0);
+    return d;
+  };
+  const formatTime = (date: Date | null) => {
+    if (!date) return '';
+    const hh = String(date.getHours()).padStart(2, '0');
+    const min = String(date.getMinutes()).padStart(2, '0');
+    return `${hh}:${min}`;
+  };
+
+  // Для автофокуса на поле времени
+  const timeInputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (step === 1 && timeInputRef.current) {
+      timeInputRef.current.blur(); // сбросить фокус, если был
+      setTimeout(() => timeInputRef.current?.focus(), 200);
+    }
+  }, [step]);
+
   return (
     <div className="pt-20 min-h-screen">
       {/* Hero section */}
@@ -337,15 +410,39 @@ const BookingPage: React.FC = () => {
                         {t('booking.date')}
                       </label>
                       <div className="relative">
-                        <Calendar size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                        <input
-                          type="date"
-                          id="date"
-                          name="date"
-                          value={formData.date}
-                          onChange={handleChange}
-                          required
+                        <ReactDatePicker
+                          selected={parseDate(formData.date)}
+                          onChange={(date: Date | null) => handleChange({ target: { name: 'date', value: formatDate(date) } } as any)}
+                          dateFormat="dd.MM.yyyy"
+                          placeholderText="ДД.MM.ГГГГ"
+                          minDate={new Date()}
+                          locale={t('lang') === 'ru' ? ru : enUS}
                           className="w-full bg-black-light border border-gray-700 rounded-lg py-2 pl-9 pr-3 text-white focus:outline-none focus:ring-1 focus:ring-gold-light focus:border-gold-light"
+                          name="date"
+                          id="date"
+                          required
+                          autoComplete="off"
+                          showPopperArrow={false}
+                          isClearable
+                          customInput={
+                            <InputMask
+                              mask="99.99.9999"
+                              maskChar={null}
+                              value={formData.date ? `${formData.date.slice(8,10)}.${formData.date.slice(5,7)}.${formData.date.slice(0,4)}` : ''}
+                              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                // Преобразуем из ДД.ММ.ГГГГ в YYYY-MM-DD
+                                const val = e.target.value;
+                                if (/^\d{2}\.\d{2}\.\d{4}$/.test(val)) {
+                                  const [dd, mm, yyyy] = val.split('.');
+                                  handleChange({ target: { name: 'date', value: `${yyyy}-${mm}-${dd}` } } as any);
+                                } else {
+                                  handleChange({ target: { name: 'date', value: '' } } as any);
+                                }
+                              }}
+                              placeholder="ДД.MM.ГГГГ"
+                              className="w-full bg-black-light border border-gray-700 rounded-lg py-2 pl-9 pr-3 text-white focus:outline-none focus:ring-1 focus:ring-gold-light focus:border-gold-light"
+                            />
+                          }
                         />
                       </div>
                     </div>
@@ -355,15 +452,41 @@ const BookingPage: React.FC = () => {
                         {t('booking.time')}
                       </label>
                       <div className="relative">
-                        <Clock size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                        <input
-                          type="time"
-                          id="time"
+                        <ReactDatePicker
+                          selected={parseTime(formData.time)}
+                          onChange={(date: Date | null) => handleChange({ target: { name: 'time', value: formatTime(date) } } as any)}
+                          showTimeSelect
+                          showTimeSelectOnly
+                          timeIntervals={15}
+                          timeCaption={t('booking.time')}
+                          dateFormat="HH:mm"
+                          placeholderText="--:--"
+                          locale={t('lang') === 'ru' ? ru : enUS}
+                          className="w-full bg-black-light border border-gray-700 rounded-lg py-2 pl-9 pr-3 text-white focus:outline-none focus:ring-1 focus:ring-gold-light focus-border-gold-light"
                           name="time"
-                          value={formData.time}
-                          onChange={handleChange}
+                          id="time"
                           required
-                          className="w-full bg-black-light border border-gray-700 rounded-lg py-2 pl-9 pr-3 text-white focus:outline-none focus:ring-1 focus:ring-gold-light focus:border-gold-light"
+                          autoComplete="off"
+                          showPopperArrow={false}
+                          isClearable
+                          customInput={
+                            <InputMask
+                              mask="99:99"
+                              maskChar={null}
+                              value={formData.time}
+                              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                // Только если 4 цифры
+                                const val = e.target.value;
+                                if (/^\d{2}:\d{2}$/.test(val)) {
+                                  handleChange({ target: { name: 'time', value: val } } as any);
+                                } else {
+                                  handleChange({ target: { name: 'time', value: '' } } as any);
+                                }
+                              }}
+                              placeholder="--:--"
+                              className="w-full bg-black-light border border-gray-700 rounded-lg py-2 pl-9 pr-3 text-white focus:outline-none focus:ring-1 focus:ring-gold-light focus-border-gold-light"
+                            />
+                          }
                         />
                       </div>
                     </div>
@@ -403,7 +526,7 @@ const BookingPage: React.FC = () => {
                         id="passengers"
                         name="passengers"
                         min="1"
-                        max="18"
+                        max={vehicleMaxPassengers[formData.vehicleType] || 18}
                         value={formData.passengers}
                         onChange={handleChange}
                         required
